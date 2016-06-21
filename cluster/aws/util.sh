@@ -24,6 +24,9 @@
 #     Detect and reuse an existing master; useful if you want to
 #     create more nodes, perhaps with a different instance type or in
 #     a different subnet/AZ
+#   KUBE_VPC_CIDR_BASE=172.20
+#     Override the base /16 used by default; useful if you want to run
+#     a second cluster on the same AWS account in the same region.
 #   KUBE_SUBNET_CIDR=172.20.1.0/24
 #     Override the default subnet CIDR; useful if you want to create
 #     a second subnet.  The default subnet is 172.20.0.0/24.  The VPC
@@ -106,6 +109,12 @@ export AWS_DEFAULT_REGION=${AWS_REGION}
 export AWS_DEFAULT_OUTPUT=text
 AWS_CMD="aws ec2"
 AWS_ASG_CMD="aws autoscaling"
+
+VPC_CIDR_BASE=172.20
+if [[ -n "${KUBE_VPC_CIDR_BASE:-}" ]]; then
+  echo "Using VPC CIDR base override: ${KUBE_VPC_CIDR_BASE}.0.0/16"
+  VPC_CIRD_BASE=${KUBE_VPC_CIDR_BASE}
+fi
 
 VPC_CIDR_BASE=${KUBE_VPC_CIDR_BASE:-172.20}
 MASTER_IP_SUFFIX=.9
